@@ -1,0 +1,186 @@
+# models/sources.yml
+version: 2
+
+sources:
+  - name: dvdrental
+    description: "DVD 렌탈 시스템의 원본 데이터"
+    schema: public
+    tables:
+      - name: customer
+        description: "고객 정보 테이블"
+        columns:
+          - name: customer_id
+            description: "고객 ID (PK)"
+            tests:
+              - unique
+              - not_null
+          - name: first_name
+            description: "고객 이름"
+            tests:
+              - not_null
+          - name: last_name
+            description: "고객 성"
+            tests:
+              - not_null
+          - name: email
+            description: "고객 이메일"
+            tests:
+              - unique
+              - not_null
+          - name: create_date
+            description: "고객 생성일"
+            tests:
+              - not_null
+          - name: last_update
+            description: "마지막 업데이트 시간"
+            tests:
+              - not_null
+
+      - name: film
+        description: "영화 정보 테이블"
+        columns:
+          - name: film_id
+            description: "영화 ID (PK)"
+            tests:
+              - unique
+              - not_null
+          - name: title
+            description: "영화 제목"
+            tests:
+              - not_null
+          - name: rental_rate
+            description: "렌탈 요금"
+            tests:
+              - not_null
+          - name: length
+            description: "영화 길이(분)"
+          - name: rating
+            description: "영화 등급"
+
+      - name: rental
+        description: "렌탈 거래 테이블"
+        columns:
+          - name: rental_id
+            description: "렌탈 ID (PK)"
+            tests:
+              - unique
+              - not_null
+          - name: rental_date
+            description: "렌탈 일시"
+            tests:
+              - not_null
+          - name: customer_id
+            description: "고객 ID (FK)"
+            tests:
+              - not_null
+              - relationships:
+                  to: source('dvdrental', 'customer')
+                  field: customer_id
+          - name: staff_id
+            description: "직원 ID (FK)"
+            tests:
+              - not_null
+
+      - name: payment
+        description: "결제 정보 테이블"
+        columns:
+          - name: payment_id
+            description: "결제 ID (PK)"
+            tests:
+              - unique
+              - not_null
+          - name: amount
+            description: "결제 금액"
+            tests:
+              - not_null
+          - name: payment_date
+            description: "결제 일시"
+            tests:
+              - not_null
+
+      - name: inventory
+        description: "재고 정보 테이블"
+        columns:
+          - name: inventory_id
+            description: "재고 ID (PK)"
+            tests:
+              - unique
+              - not_null
+          - name: film_id
+            description: "영화 ID (FK)"
+            tests:
+              - not_null
+
+      - name: staff
+        description: "직원 정보 테이블"
+        columns:
+          - name: staff_id
+            description: "직원 ID (PK)"
+            tests:
+              - unique
+              - not_null
+          - name: store_id
+            description: "매장 ID (FK)"
+            tests:
+              - not_null
+
+      - name: store
+        description: "매장 정보 테이블"
+        columns:
+          - name: store_id
+            description: "매장 ID (PK)"
+            tests:
+              - unique
+              - not_null
+      - name: category
+        description: "영화 카테고리 테이블"
+      - name: film_category
+        description: "영화-카테고리 연결 테이블"
+
+      - name: address
+        description: "주소 정보 테이블"
+        columns:
+          - name: address_id
+            description: "주소 ID (PK)"
+            tests:
+              - unique
+              - not_null
+          - name: address
+            description: "주소"
+          - name: city_id
+            description: "도시 ID (FK)"
+
+      - name: city
+        description: "도시 정보 테이블"
+        columns:
+          - name: city_id
+            description: "도시 ID (PK)"
+            tests:
+              - unique
+              - not_null
+          - name: city
+            description: "도시명"
+          - name: country_id
+            description: "국가 ID (FK)"
+
+      - name: country
+        description: "국가 정보 테이블"
+        columns:
+          - name: country_id
+            description: "국가 ID (PK)"
+            tests:
+              - unique
+              - not_null
+          - name: country
+            description: "국가명"
+
+      - name: language
+        description: "언어 정보 테이블"
+        columns:
+          - name: language_id
+            description: "언어 ID (PK)"
+            tests:
+              - unique
+              - not_null
+          - name: name
+            description: "언어명"

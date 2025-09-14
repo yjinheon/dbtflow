@@ -1,0 +1,25 @@
+# models/staging/dvdrental/_dvdrental__models.yml
+version: 2
+
+models:
+  # Staging 모델 네이밍: stg_<source>__<entity>
+  - name: stg_dvdrental__customers
+    description: "정제된 고객 데이터"
+
+  - name: stg_dvdrental__films
+    description: "정제된 영화 데이터"
+
+  - name: stg_dvdrental__rentals
+    description: "정제된 렌탈 거래 데이터"
+
+  # Intermediate 모델 네이밍: int_<business_concept>
+  - name: int_customer_rental_metrics
+    description: "고객별 렌탈 지표 계산"
+
+  # Dimension 네이밍: dim_<entity>
+  - name: dim_customers
+    description: "고객 차원 테이블 (SCD Type 2)"
+
+  # Fact 네이밍: fct_<process/event>
+  - name: fct_rentals
+    description: "렌탈 팩트 테이블"

@@ -1,0 +1,86 @@
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: "proj_dvdrental"
+version: "1.0.0"
+config-version: 2
+# This setting configures which "profile" dbt uses for this project.
+profile: "proj_dvdrental"
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+# build path
+
+target-path: "target"
+clean-targets: # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+# set global variable
+vars:
+  start_date: "2005-01-01"
+  end_date: "2006-12-31"
+  # 비즈니스 로직 변수
+  active_customer_days: 90
+  high_value_customer_threshold: 100
+  # 스키마 접두사
+  schema_prefix: "analytics_"
+
+# model configs
+models:
+  dvd_rental_project:
+    # Staging 레이어
+    staging:
+      +materialized: view
+      +schema: staging
+      dvdrental:
+        +pre-hook: "{{ logging.log_model_start_end(model, 'start') }}"
+        +post-hook: "{{ logging.log_model_start_end(model, 'end') }}"
+
+    # Intermediate 레이어
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+
+    # Mart 레이어
+    marts:
+      +materialized: table
+      +schema: marts
+      core:
+        +materialized: table
+        +post-hook: "ANALYZE {{ this }}" # PostgreSQL 통계 업데이트
+      finance:
+        +materialized: table
+        +indexes:
+          - columns: ["date_day"]
+            type: btree
+
+# 스냅샷 설정
+snapshots:
+  dvd_rental_project:
+    +target_schema: snapshots
+    +strategy: timestamp
+    +updated_at: last_update
+
+# 시드 설정
+seeds:
+  dvd_rental_project:
+    +schema: seeds
+    film_ratings_mapping:
+      +column_types:
+        rating: varchar(10)
+        description: varchar(100)
+        target_audience: varchar(50)
+
+# 테스트 설정
+tests:
+  +store_failures: true
+  +schema: test_failures

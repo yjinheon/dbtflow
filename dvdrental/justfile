@@ -1,0 +1,51 @@
+
+_default:
+    ehco "hello dbt"
+
+# 1. setup
+
+clean:
+  dbt clean
+
+deps:
+  dbt deps
+
+snapshot:
+  dbt snapshot
+
+run:
+  dbt run
+
+test:
+  dbt test
+
+docs-generate:
+  dbt docs generate
+
+docs-serve:
+  dbt docs serve
+
+# 2. dbt connection test 
+
+debug:
+  dbt debug
+
+# run interactive
+
+run-staging:
+  dbt run --select staging
+
+select-run:
+  dbt run --select $(dbt ls --resource-type model | fzf)
+
+# staging model들 만에서 선택 실행
+stg-select-run:
+  dbt run --select $(dbt ls --select staging --resource-type model | fzf)
+
+# complie된 sql 확인
+check-compile:
+  dbt compile --select $(dbt ls --resource-type model | fzf)
+
+
+# multi 선택 후 실행
+#dbt run --select $(dbt ls --resource-type model | fzf -m | tr '\n' ' ')
