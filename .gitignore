@@ -101,6 +101,12 @@ ipython_config.py
 #   This is especially recommended for binary packages to ensure reproducibility, and is more
 #   commonly ignored for libraries.
 #uv.lock
+.uv-cache/
+
+# dbt local user state
+.user.yml
+profiles.yml
+profiles.yaml
 
 # poetry
 #   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.

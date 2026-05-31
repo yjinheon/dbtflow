@@ -36,49 +36,34 @@ vars:
 
 # model configs
 models:
-  dvd_rental_project:
+  proj_dvdrental:
     # Staging 레이어
-    staging:
+    01_staging:
       +materialized: view
       +schema: staging
       dvdrental:
-        +pre-hook: "{{ logging.log_model_start_end(model, 'start') }}"
-        +post-hook: "{{ logging.log_model_start_end(model, 'end') }}"
+        +pre-hook: "{{ log_model_start_end(model, 'start') }}"
+        +post-hook: "{{ log_model_start_end(model, 'end') }}"
 
     # Intermediate 레이어
-    intermediate:
+    02_intermediate:
       +materialized: view
       +schema: intermediate
 
     # Mart 레이어
-    marts:
+    03_marts:
       +materialized: table
       +schema: marts
       core:
         +materialized: table
         +post-hook: 'ANALYZE {{ this }}' # PostgreSQL 통계 업데이트
-      finance:
-        +materialized: table
-        +indexes:
-          - columns: ['date_day']
-            type: btree
 
 # 스냅샷 설정
 snapshots:
-  dvd_rental_project:
+  proj_dvdrental:
     +target_schema: snapshots
     +strategy: timestamp
     +updated_at: last_update
-
-# 시드 설정
-seeds:
-  dvd_rental_project:
-    +schema: seeds
-    film_ratings_mapping:
-      +column_types:
-        rating: varchar(10)
-        description: varchar(100)
-        target_audience: varchar(50)
 
 # 테스트 설정
 tests:

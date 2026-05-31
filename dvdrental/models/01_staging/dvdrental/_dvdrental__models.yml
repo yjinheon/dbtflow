@@ -12,6 +12,9 @@ models:
   - name: stg_dvdrental__rentals
     description: '정제된 렌탈 거래 데이터'
 
+  - name: stg_dvdrental__stores
+    description: '정제된 매장 데이터'
+
   # Intermediate 모델 네이밍: int_<business_concept>
   - name: int_customer_rental_metrics
     description: '고객별 렌탈 지표 계산'

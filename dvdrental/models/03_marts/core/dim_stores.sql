@@ -1,23 +1,11 @@
--- models/marts/core/dim_stores.sql
+-- models/03_marts/core/dim_stores.sql
 {{ config(
     materialized='table',
     schema='marts'
 ) }}
 
-WITH stores_with_address AS (
-    SELECT 
-        s.store_id,
-        s.manager_staff_id,
-        s.last_update,
-        a.address,
-        a.district,
-        a.postal_code,
-        c.city,
-        co.country
-    FROM {{ source('dvdrental', 'store') }} s
-    LEFT JOIN {{ source('dvdrental', 'address') }} a ON s.address_id = a.address_id
-    LEFT JOIN {{ source('dvdrental', 'city') }} c ON a.city_id = c.city_id
-    LEFT JOIN {{ source('dvdrental', 'country') }} co ON c.country_id = co.country_id
+WITH stores AS (
+    SELECT * FROM {{ ref('stg_dvdrental__stores') }}
 ),
 
 dim_stores AS (
@@ -51,7 +39,7 @@ dim_stores AS (
         last_update AS source_last_update,
         CURRENT_TIMESTAMP AS loaded_at
         
-    FROM stores_with_address
+    FROM stores
 )
 
 SELECT * FROM dim_stores
